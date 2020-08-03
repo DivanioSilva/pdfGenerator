@@ -3,6 +3,8 @@ package com.ds;
 import com.itextpdf.awt.geom.AffineTransform;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
@@ -11,6 +13,8 @@ import java.io.IOException;
 
 @Component
 public class PdfCreator {
+
+    Resource resource = new ClassPathResource("classpath:Logo.png");
 
     public void createTemplate(String text, String documentName){
         Document document = new Document();
@@ -63,6 +67,42 @@ public class PdfCreator {
             }
             document.close();
             
+        } catch (IOException | DocumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(String src, String dest){
+        try{
+            PdfReader reader = new PdfReader(src);
+            PdfDictionary dict = reader.getPageN(1);
+            PdfObject object = dict.getDirectObject(PdfName.CONTENTS);
+            if(object instanceof PRStream){
+                PRStream stream = (PRStream) object;
+                byte[] data = PdfReader.getStreamBytes(stream);
+                String dd = new String(data);
+
+                String eredeti = "DS que manda";
+                String target = "cerveja";
+                //String decoded = new String(target.getBytes("ISO-8859-1"), "UTF-8");
+
+                if(dd.contains(target)){
+                    dd = dd.replace(target, eredeti);
+                }
+
+                //stream.setData(new String(data).replace("Boas cú de frango", eredeti).getBytes("ISO-8859-2"));
+
+                stream.setData(dd.getBytes());
+            }
+
+            PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
+            stamper.close();
+            reader.close();
+            //Paragraph preface = new Paragraph();
+            //preface.setAlignment(Element.ALIGN_CENTER);
+
+            reader.close();
+
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }

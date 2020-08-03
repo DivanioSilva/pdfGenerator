@@ -18,8 +18,9 @@ public class TemplateApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		String documentName = "FirstDoc.pdf";
-		pdfCreator.createTemplate("Boas cú de frango", documentName);
+		String templateName = "invoiceTemplate.pdf";
+		pdfCreator.createTemplate("Eu estou muito bem, mas gostaria de uma boa cerveja!", documentName);
 
-		pdfCreator.update(documentName, "Tás mesmo bom?", "resultado.pdf");
+		pdfCreator.update(templateName, "resultado.pdf");
 	}
 }
